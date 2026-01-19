@@ -107,5 +107,5 @@ To **disable** tools, send `"tool_choice": "none"` in your request.
 
 ## Documentation
 Full technical documentation is available in the `docs/` directory.
-- [API Reference](docs/api_reference.html)
-- [Architecture Deep Dive](docs/architecture.html)
+- [API Reference](https://hector-oviedo.github.io/vllm-test/index.html)
+- [Architecture Deep Dive](https://hector-oviedo.github.io/vllm-test/architecture.html)

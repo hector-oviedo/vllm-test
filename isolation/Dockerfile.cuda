@@ -1,5 +1,8 @@
 # CUDA Isolation Layer (NVIDIA)
 FROM vllm/vllm-openai:latest
 
+# Vendor Neutrality: Bypass OpenAI API key requirement for local serving
+ENV VLLM_API_KEY="EMPTY"
+
 # MIAA Compliance: Ensure standard entrypoint
 ENTRYPOINT ["python3", "-m", "vllm.entrypoints.openai.api_server"]

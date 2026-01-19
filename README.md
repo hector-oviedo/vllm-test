@@ -1,7 +1,6 @@
 # MIAA Inference Engine
 ### Modularity, Isolation, Abstraction, Agnostic
 
-**Author:** Hector Oviedo  
 **Status:** Production / Active Development
 
 ## Executive Summary
@@ -31,7 +30,7 @@ This system provides a "Universal Interface" compatible with modern reasoning wo
 
 ### Prerequisites
 *   Docker & Docker Compose
-*   NVIDIA GPU (CUDA 12+) OR AMD GPU (ROCm 6+)
+*   NVIDIA GPU (CUDA 12+) OR AMD GPU (ROCm 7+)
 
 ### Quick Start
 ```bash
@@ -42,6 +41,7 @@ git clone <repo_url>
 docker-compose --profile cuda up -d
 
 # OR Start MIAA on AMD GPU (ROCm)
+# Note: Requires AMD ROCm 7+ compatible hardware
 docker-compose --profile rocm up -d
 ```
 
@@ -49,6 +49,3 @@ docker-compose --profile rocm up -d
 Full technical documentation is available in the `docs/` directory.
 - [API Reference](docs/api_reference.html)
 - [Architecture Deep Dive](docs/architecture.html)
-
----
-© 2026 Hector Oviedo. All Rights Reserved.

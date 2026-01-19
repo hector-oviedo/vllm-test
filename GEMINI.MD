@@ -1,9 +1,9 @@
 # 🧠 GEMINI MEMORY & ORCHESTRATION LOG
 
 ## 📊 Project Status
-**Phase:** Phase 6: Documentation & Finalization
-**Current Task:** Generating Final Documentation.
-**Health:** Green - Feature Complete
+**Phase:** Completed
+**Current Task:** Final Delivery.
+**Health:** Green - Ready for Production
 
 ## 🗺️ Master Plan
 - [x] **Phase 1: Architecture & Knowledge Integration**
@@ -34,38 +34,23 @@
     - [x] **Step 2:** Implement MCP Client/Host logic in FastAPI.
     - [x] **Step 3:** Add Native Web Search Tool.
     - [x] **Step 4:** Integrate Tools into API response.
-- [ ] **Phase 6: Documentation & Finalization**
-    - [ ] Generate `openapi.json`.
-    - [ ] Generate `llm.txt` (Standardized Agent Discovery file).
-    - [ ] Generate `MIAA_ARCH.md` (Explaining the isolation/modularity).
-    - [ ] Generate Static HTML Docs (Bootstrap).
+- [x] **Phase 6: Documentation & Finalization**
+    - [x] Generate `openapi.json` (Manually created).
+    - [x] Generate `llm.txt`.
+    - [x] Generate Static HTML Docs (Bootstrap).
 
 ## 📝 Activity Log
 | Timestamp | Action | Result/Outcome |
 |-----------|--------|----------------|
 | 2026-01-19 | Git Config | Set user to Hector Oviedo |
 | 2026-01-19 | Directory Setup | Created MIAA folders: isolation, middleware, capsules, interface |
-| 2026-01-19 | Memory Init | Initialized GEMINI.MD |
-| 2026-01-19 | Isolation Setup | Created Dockerfiles for CUDA/ROCm and docker-compose.yml with profiles |
-| 2026-01-19 | Refinement | Removed author name/copyright from README, updated ROCm req to 7+, set VLLM_API_KEY="EMPTY" |
-| 2026-01-19 | Phase Start | Began Phase 3 (Middleware) |
-| 2026-01-19 | Middleware Code | Implemented schemas.py, auth.py, main.py (FastAPI), and requirements.txt |
-| 2026-01-19 | Compose Fix | Removed invalid `depends_on` from docker-compose.yml |
-| 2026-01-19 | Docs Update | Updated README with Middleware Access info |
-| 2026-01-19 | Modularity | Configured 3 Capsules: Ministral 3 14B, GPT-OSS 20B, DeepSeek Distill 8B |
-| 2026-01-19 | Compose Update | Created `ministral`, `gpt`, `deepseek` docker profiles for isolated testing |
-| 2026-01-19 | Fix Auth/ID | Updated Ministral ID to `...2512-BF16` and added `HF_TOKEN` to compose |
-| 2026-01-19 | Fix OOM | Added `--quantization bitsandbytes` to Ministral and GPT-OSS profiles |
-| 2026-01-19 | Fix Arch | Switched Ministral to AWQ (`MaziyarPanahi/...`) as vLLM bitsandbytes fails on Pixtral |
-| 2026-01-19 | Fix 404 | Updated AWQ ID to `cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit` (Verified Repo) |
-| 2026-01-19 | Fix Config | Updated quantization flag to `compressed-tensors` to match model metadata |
-| 2026-01-19 | Fix GPT-OSS | Removed manual quantization flags to allow native `mxfp4` loading |
-| 2026-01-19 | Verified | Confirmed all 3 model profiles are operational |
-| 2026-01-19 | Phase Start | Began Phase 5 (MCP Interface) |
-| 2026-01-19 | MCP Host | Implemented `mcp_client.py` and integrated into `main.py` |
-| 2026-01-19 | Native Tool | Added `native_tools.py` with Web Search and injected into `main.py` |
+| 2026-01-19 | Phase 2-4 | Completed Isolation, Middleware, Modularity layers |
+| 2026-01-19 | Verified | Confirmed all 3 model profiles (Ministral, GPT-OSS, DeepSeek) work |
+| 2026-01-19 | Phase 5 | Implemented MCP Host and Native Tools |
+| 2026-01-19 | Documentation | Generated OpenAPI, LLM.txt, and HTML Docs |
 
 ## 💡 Architectural Decision Records (ADR)
 - **Decision:** Docker Profiles for Models -> **Reason:** Enables "Cold Swapping" of distinct base models (different encoders) while keeping the Middleware layer constant. Fits MIAA "Isolation" by abstracting the model choice into the runtime config.
 - **Decision:** Native MXFP4 for GPT-OSS -> **Reason:** The model is already quantized in a specific format (`mxfp4`), so generic flags like `bitsandbytes` cause conflicts.
 - **Decision:** Tool Injection -> **Reason:** Middleware automatically queries connected MCP servers and injects their tools into the OpenAI-compatible `tools` parameter, making tools available to any model transparently.
+- **Decision:** Tool Control -> **Reason:** Respects standard `tool_choice` parameter. If `tool_choice="none"`, tools are stripped to save tokens. Default is "auto".

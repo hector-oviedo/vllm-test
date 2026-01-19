@@ -68,23 +68,30 @@ async def chat_completions(
         # Remove top-level system from payload sent to OpenAI-compatible upstream
         payload.pop("system", None)
 
-    # 1.5 Tool Injection (Native + MCP)
-    current_tools = payload.get("tools", [])
+    # 1.5 MCP Tool Injection (Agnostic Layer)
+    # Check if client explicitly disabled tools via tool_choice="none"
+    client_tool_choice = payload.get("tool_choice")
     
-    # Add Native Web Search
-    current_tools.append(WEB_SEARCH_TOOL)
-    
-    # Add MCP Tools if available
-    if mcp_host:
-        mcp_tools = await mcp_host.list_tools()
-        if mcp_tools:
-            current_tools.extend(mcp_tools)
-    
-    if current_tools:
-        payload["tools"] = current_tools
-        # Ensure tool_choice is set if tools are present (optional, usually 'auto')
-        if "tool_choice" not in payload:
-            payload["tool_choice"] = "auto"
+    if client_tool_choice != "none":
+        current_tools = payload.get("tools", [])
+        
+        # Add Native Web Search
+        current_tools.append(WEB_SEARCH_TOOL)
+        
+        # Add MCP Tools if available
+        if mcp_host:
+            mcp_tools = await mcp_host.list_tools()
+            if mcp_tools:
+                current_tools.extend(mcp_tools)
+        
+        if current_tools:
+            payload["tools"] = current_tools
+            # Default to 'auto' if not specified
+            if not client_tool_choice:
+                payload["tool_choice"] = "auto"
+    else:
+        # If tool_choice is explicitly "none", ensure no tools are sent to save tokens/confusion
+        payload.pop("tools", None)
 
     # 2. Engine Dispatch
     upstream_url = f"{INFERENCE_URL}/chat/completions"

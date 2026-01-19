@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIAA API Reference</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        pre { background-color: #f8f9fa; padding: 15px; border-radius: 5px; }
+        .method { font-weight: bold; color: #0d6efd; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">MIAA Engine</a>
+            <div class="navbar-nav">
+                <a class="nav-link active" href="index.html">API Reference</a>
+                <a class="nav-link" href="architecture.html">Architecture</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">API Reference</h1>
+        <p class="lead">Universal Interface for MIAA Inference Engine.</p>
+
+        <hr class="my-5">
+
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <span class="badge bg-light text-primary me-2">POST</span> /v1/chat/completions
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Create Chat Completion</h5>
+                <p class="card-text">Generates a model response for the given conversation history.</p>
+                
+                <h6>Request Body</h6>
+                <pre>
+{
+  "model": "ministral-3-14b-instruct",
+  "messages": [
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "Hello!"}
+  ],
+  "stream": true,
+  "tools": [...], // Optional
+  "thinking": { "type": "enabled" } // Optional
+}</pre>
+
+                <h6>Response (Streamed)</h6>
+                <pre>data: {"choices": [{"delta": {"content": "Hello"}}]} ...</pre>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <span class="badge bg-light text-success me-2">GET</span> /health
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">System Health</h5>
+                <p class="card-text">Checks the status of the Middleware and connections.</p>
+                <pre>{ "status": "healthy", "layer": "middleware", "mcp": "connected" }</pre>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light py-4 mt-5">
+        <div class="container text-center text-muted">
+            <small>MIAA Inference Engine &copy; 2026</small>
+        </div>
+    </footer>
+</body>
+</html>

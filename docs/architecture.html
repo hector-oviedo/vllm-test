@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIAA Architecture</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .pillar-card { height: 100%; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">MIAA Engine</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="index.html">API Reference</a>
+                <a class="nav-link active" href="architecture.html">Architecture</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">System Architecture</h1>
+        <p class="lead">Built on the <strong>MIAA Paradigm</strong>: Modularity, Isolation, Abstraction, Agnostic.</p>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4 mt-3">
+            <div class="col">
+                <div class="card pillar-card border-primary">
+                    <div class="card-header bg-primary text-white">1. Modularity (Intelligence)</div>
+                    <div class="card-body">
+                        <p>Models are defined as <strong>Capsules</strong> (YAML manifests). They are hot-swappable and decoupled from the runtime code.</p>
+                        <ul>
+                            <li><strong>Base Models:</strong> Ministral 3, GPT-OSS, DeepSeek.</li>
+                            <li><strong>Adapters:</strong> Dynamic LoRA injection (supported).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card pillar-card border-danger">
+                    <div class="card-header bg-danger text-white">2. Isolation (Execution)</div>
+                    <div class="card-body">
+                        <p>Inference runs in strictly isolated Docker containers using hardware-specific profiles.</p>
+                        <ul>
+                            <li><strong>CUDA Profile:</strong> NVIDIA runtime.</li>
+                            <li><strong>ROCm Profile:</strong> AMD runtime.</li>
+                            <li><strong>Benefit:</strong> A crash in the GPU layer does not take down the API gateway.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card pillar-card border-warning">
+                    <div class="card-header bg-warning text-dark">3. Abstraction (Middleware)</div>
+                    <div class="card-body">
+                        <p>A "Universal Translator" Middleware (FastAPI) normalizes all traffic.</p>
+                        <ul>
+                            <li><strong>Unified Schema:</strong> Enforces standard inputs/outputs.</li>
+                            <li><strong>Embedding Adaptation:</strong> (Future) Maps vector spaces.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card pillar-card border-success">
+                    <div class="card-header bg-success text-white">4. Agnostic (Interface)</div>
+                    <div class="card-body">
+                        <p>The system connects to the world via standard protocols, not custom code.</p>
+                        <ul>
+                            <li><strong>MCP Host:</strong> Connects to Model Context Protocol servers.</li>
+                            <li><strong>Observability:</strong> OpenLLMetry/OpenTelemetry hooks.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light py-4 mt-5">
+        <div class="container text-center text-muted">
+            <small>MIAA Inference Engine &copy; 2026</small>
+        </div>
+    </footer>
+</body>
+</html>

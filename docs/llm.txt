@@ -1,0 +1,23 @@
+# MIAA Inference Engine API
+
+## Overview
+A production-grade, hardware-agnostic LLM Inference API following the MIAA Paradigm (Modularity, Isolation, Abstraction, Agnostic). It provides a unified, OpenAI-compatible interface for various open-source models.
+
+## Endpoints
+
+### Chat Completions
+- **URL:** `/v1/chat/completions`
+- **Method:** `POST`
+- **Description:** Generate chat responses from models. Supports streaming, tools (MCP), and reasoning.
+- **Auth:** Bearer Token or `x-api-key`.
+- **Schema:** OpenAI Chat Completion Object.
+
+### Health Check
+- **URL:** `/health`
+- **Method:** `GET`
+- **Description:** Returns system status and layer health.
+
+## Capabilities
+- **Thinking:** Supports CoT via `thinking` parameter.
+- **Tools:** Native Web Search + MCP Tool support.
+- **Streaming:** SSE Dual-Stream (Content + Reasoning).

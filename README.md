@@ -38,8 +38,11 @@ This system provides a "Universal Interface" compatible with modern reasoning wo
 # Clone the repository
 git clone <repo_url>
 
-# Start the MIAA Engine (Auto-detects hardware)
-docker-compose up -d
+# Start MIAA on NVIDIA GPU (CUDA)
+docker-compose --profile cuda up -d
+
+# OR Start MIAA on AMD GPU (ROCm)
+docker-compose --profile rocm up -d
 ```
 
 ## Documentation

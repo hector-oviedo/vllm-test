@@ -1,0 +1,69 @@
+version: '3.9'
+
+services:
+  # ---------------------------------------------------------------------------
+  # MIDDLEWARE LAYER (Abstraction)
+  # ---------------------------------------------------------------------------
+  middleware:
+    build: 
+      context: ./middleware
+      dockerfile: Dockerfile
+    container_name: miaa-middleware
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - INFERENCE_URL=http://inference:8000/v1
+    depends_on:
+      - inference
+
+  # ---------------------------------------------------------------------------
+  # ISOLATION LAYER (Execution) - NVIDIA CUDA
+  # ---------------------------------------------------------------------------
+  inference-cuda:
+    profiles: ["cuda"]
+    build:
+      context: ./isolation
+      dockerfile: Dockerfile.cuda
+    container_name: miaa-inference-cuda
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    ports:
+      - "8000:8000"
+    command: --model facebook/opt-125m --port 8000 # Default placeholder model
+    networks:
+      default:
+        aliases:
+          - inference
+
+  # ---------------------------------------------------------------------------
+  # ISOLATION LAYER (Execution) - AMD ROCm
+  # ---------------------------------------------------------------------------
+  inference-rocm:
+    profiles: ["rocm"]
+    build:
+      context: ./isolation
+      dockerfile: Dockerfile.rocm
+    container_name: miaa-inference-rocm
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    ports:
+      - "8000:8000"
+    command: --model facebook/opt-125m --port 8000 # Default placeholder model
+    group_add:
+      - video
+    ipc: host
+    networks:
+      default:
+        aliases:
+          - inference
+
+networks:
+  default:
+    driver: bridge

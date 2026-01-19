@@ -1,0 +1,5 @@
+# ROCm Isolation Layer (AMD)
+FROM rocm/vllm:latest
+
+# MIAA Compliance: Ensure standard entrypoint
+ENTRYPOINT ["python3", "-m", "vllm.entrypoints.openai.api_server"]

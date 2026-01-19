@@ -14,8 +14,6 @@ services:
       - "8080:8080"
     environment:
       - INFERENCE_URL=http://inference:8000/v1
-    depends_on:
-      - inference
 
   # ---------------------------------------------------------------------------
   # ISOLATION LAYER (Execution) - NVIDIA CUDA

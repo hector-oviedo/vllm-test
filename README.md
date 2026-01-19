@@ -45,6 +45,15 @@ docker-compose --profile cuda up -d
 docker-compose --profile rocm up -d
 ```
 
+### Accessing the API
+The Middleware Gateway ("The Universal Translator") listens on port **8080**.
+
+*   **Endpoint:** `POST http://localhost:8080/v1/chat/completions`
+*   **Health Check:** `GET http://localhost:8080/health`
+*   **Authentication:** Requires a non-empty token (Local Mode).
+    *   Header: `Authorization: Bearer my-secret-key`
+    *   Header: `x-api-key: my-secret-key`
+
 ## Documentation
 Full technical documentation is available in the `docs/` directory.
 - [API Reference](docs/api_reference.html)

@@ -2,8 +2,8 @@
 
 ## 📊 Project Status
 **Phase:** Phase 4: The Intelligence (Modularity Layer)
-**Current Task:** Verifying Secondary Models (GPT-OSS, DeepSeek).
-**Health:** Green - Ministral Verified
+**Current Task:** Verifying Secondary Models (Fixing GPT-OSS Quantization).
+**Health:** Yellow - Tuning GPT-OSS Config
 
 ## 🗺️ Master Plan
 - [x] **Phase 1: Architecture & Knowledge Integration**
@@ -27,7 +27,8 @@
     - [x] **Step 5:** **Fix:** Enable `bitsandbytes` quantization for 14B/20B models to fit in 24GB VRAM.
     - [x] **Step 6:** **Refinement:** Switch Ministral to AWQ (`cyankiwi/...`) to resolve architecture and availability issues.
     - [x] **Step 7:** **Fix:** Set `--quantization compressed-tensors` to match AWQ model config.
-    - [ ] **Step 8:** **Testing:** Verify `gpt-cuda` (Thinking) and `deepseek-cuda` (Distill) profiles.
+    - [x] **Step 8:** **Fix:** Remove explicit quantization for `gpt-oss-20b` (Native `mxfp4` detected).
+    - [ ] **Step 9:** **Testing:** Verify `deepseek-cuda` (Distill) profile.
 - [ ] **Phase 5: The Interface (Agnostic Layer)**
     - [ ] Implement MCP Host for Tooling.
     - [ ] Add OpenLLMetry Observability.
@@ -56,7 +57,7 @@
 | 2026-01-19 | Fix Arch | Switched Ministral to AWQ (`MaziyarPanahi/...`) as vLLM bitsandbytes fails on Pixtral |
 | 2026-01-19 | Fix 404 | Updated AWQ ID to `cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit` (Verified Repo) |
 | 2026-01-19 | Fix Config | Updated quantization flag to `compressed-tensors` to match model metadata |
-| 2026-01-19 | Docs Update | Clarified Model Profiles and Quantization in README |
+| 2026-01-19 | Fix GPT-OSS | Removed manual quantization flags to allow native `mxfp4` loading |
 
 ## 💡 Architectural Decision Records (ADR)
 - **Decision:** Docker Profiles for Models -> **Reason:** Enables "Cold Swapping" of distinct base models (different encoders) while keeping the Middleware layer constant. Fits MIAA "Isolation" by abstracting the model choice into the runtime config.

@@ -60,7 +60,7 @@ services:
     ports:
       - "8000:8000"
     # Base Model: GPT-OSS 20B
-    command: --model openai/gpt-oss-20b --port 8000 --dtype auto --gpu-memory-utilization 0.9 --trust-remote-code --quantization bitsandbytes --load-format bitsandbytes
+    command: --model openai/gpt-oss-20b --port 8000 --dtype auto --gpu-memory-utilization 0.9 --trust-remote-code
     networks:
       default:
         aliases:

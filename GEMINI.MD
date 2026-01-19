@@ -48,7 +48,7 @@
 | 2026-01-19 | Verified | Confirmed all 3 model profiles (Ministral, GPT-OSS, DeepSeek) work |
 | 2026-01-19 | Phase 5 | Implemented MCP Host and Native Tools |
 | 2026-01-19 | Documentation | Created HTML Docs and Automated OpenAPI Generator |
-| 2026-01-19 | Maintenance | Fixed Docker network corruption and updated `docker-compose.yml` |
+| 2026-01-19 | Maintenance | Fixed Docker networking and silenced variable warnings |
 
 ## 💡 Architectural Decision Records (ADR)
 - **Decision:** Docker Profiles for Models -> **Reason:** Enables "Cold Swapping" of distinct base models (different encoders) while keeping the Middleware layer constant. Fits MIAA "Isolation" by abstracting the model choice into the runtime config.

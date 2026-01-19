@@ -79,3 +79,7 @@ class ChatCompletionRequest(BaseModel):
         if v is None and values.get("max_tokens") is not None:
             return values.get("max_tokens")
         return v
+
+class ToolExecutionRequest(BaseModel):
+    name: str = Field(..., description="Name of the tool to execute")
+    arguments: Dict[str, Any] = Field(..., description="Arguments for the tool")

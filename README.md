@@ -67,24 +67,43 @@ docker-compose --profile deepseek up -d
 # Only one inference profile can run at a time on the same GPU port (8000).
 ```
 
-### Accessing the API
-The Middleware Gateway ("The Universal Translator") listens on port **8080**.
+### Usage Guide & Expectations
 
-*   **Endpoint:** `POST http://localhost:8080/v1/chat/completions`
-*   **Health Check:** `GET http://localhost:8080/health`
-*   **Authentication:** Requires a non-empty token (Local Mode).
-    *   Header: `Authorization: Bearer my-secret-key`
-    *   Header: `x-api-key: my-secret-key`
+The MIAA Engine exposes a standardized API on port **8080**.
 
-## Development & Automation
-The project includes automated tooling for documentation generation.
+#### 1. Authentication
+All requests require a valid API token. In local mode, you can use any non-empty string.
+*   Header: `Authorization: Bearer my-secret-key` OR `x-api-key: my-secret-key`
 
-### Auto-Generate OpenAPI Schema
-To update `docs/openapi.json` automatically based on the current code:
-```bash
-docker-compose --profile docs up
+#### 2. Chat Completions (Standard)
+**Endpoint:** `POST http://localhost:8080/v1/chat/completions`
+
+**Request:**
+```json
+{
+  "model": "ministral-3-14b-instruct",
+  "messages": [
+    {"role": "user", "content": "What is the capital of France?"}
+  ],
+  "stream": true
+}
 ```
-This spins up a container, generates the schema from the FastAPI application, saves it to the `docs/` folder, and exits.
+
+#### 3. Using Tools (Agentic Workflow)
+By default, the middleware injects available tools (like `web_search`) into your request.
+1.  **Request:** Send a standard chat prompt (e.g., "Search for MIAA architecture").
+2.  **Response:** The model will return a `finish_reason: tool_calls` response with the tool name and arguments.
+3.  **Execution:** You (the client) must execute the tool. You can use our helper endpoint:
+    *   **Endpoint:** `POST http://localhost:8080/v1/tools/execute`
+    *   **Body:** `{"name": "web_search", "arguments": {"query": "MIAA architecture"}}`
+4.  **Loop:** Feed the tool output back to the model as a `tool` role message.
+
+To **disable** tools, send `"tool_choice": "none"` in your request.
+
+#### 4. Model Capabilities
+*   **Ministral 3 14B (Profile: `ministral`):** Best for general instruction following, coding, and tool use. Supports 32k context.
+*   **GPT-OSS 20B (Profile: `gpt`):** Optimized for complex reasoning and Chain-of-Thought (CoT). Slower but deeper.
+*   **DeepSeek Distill 8B (Profile: `deepseek`):** Fast, efficient reasoning model. Great for high-throughput tasks.
 
 ## Documentation
 Full technical documentation is available in the `docs/` directory.

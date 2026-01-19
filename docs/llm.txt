@@ -12,6 +12,13 @@ A production-grade, hardware-agnostic LLM Inference API following the MIAA Parad
 - **Auth:** Bearer Token or `x-api-key`.
 - **Schema:** OpenAI Chat Completion Object.
 
+### Execute Tool
+- **URL:** `/v1/tools/execute`
+- **Method:** `POST`
+- **Description:** Execute a Native or MCP tool hosted by the middleware.
+- **Payload:** `{"name": "tool_name", "arguments": {...}}`
+- **Returns:** JSON object with tool output.
+
 ### Health Check
 - **URL:** `/health`
 - **Method:** `GET`

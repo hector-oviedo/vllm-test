@@ -2,8 +2,8 @@
 
 ## 📊 Project Status
 **Phase:** Phase 4: The Intelligence (Modularity Layer)
-**Current Task:** Verifying Inference Config (Fixing Architecture Incompatibility).
-**Health:** Yellow - Fixing Ministral Config
+**Current Task:** Verifying Inference Config (Fixing Model Availability).
+**Health:** Yellow - Fixing Ministral ID
 
 ## 🗺️ Master Plan
 - [x] **Phase 1: Architecture & Knowledge Integration**
@@ -25,7 +25,7 @@
     - [x] **Step 3:** Update Docker Compose with Profiles for each model.
     - [x] **Step 4:** **Fix:** Correct Ministral ID and add HF_TOKEN support.
     - [x] **Step 5:** **Fix:** Enable `bitsandbytes` quantization for 14B/20B models to fit in 24GB VRAM.
-    - [x] **Step 6:** **Refinement:** Switch Ministral to AWQ (Pixtral arch doesn't support bnb yet).
+    - [x] **Step 6:** **Refinement:** Switch Ministral to AWQ (`cyankiwi/...`) to resolve architecture and availability issues.
     - [ ] **Step 7:** **Testing:** Verify model switching and "Thinking" capabilities.
 - [ ] **Phase 5: The Interface (Agnostic Layer)**
     - [ ] Implement MCP Host for Tooling.
@@ -53,6 +53,7 @@
 | 2026-01-19 | Fix Auth/ID | Updated Ministral ID to `...2512-BF16` and added `HF_TOKEN` to compose |
 | 2026-01-19 | Fix OOM | Added `--quantization bitsandbytes` to Ministral and GPT-OSS profiles |
 | 2026-01-19 | Fix Arch | Switched Ministral to AWQ (`MaziyarPanahi/...`) as vLLM bitsandbytes fails on Pixtral |
+| 2026-01-19 | Fix 404 | Updated AWQ ID to `cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit` (Verified Repo) |
 
 ## 💡 Architectural Decision Records (ADR)
 - **Decision:** Docker Profiles for Models -> **Reason:** Enables "Cold Swapping" of distinct base models (different encoders) while keeping the Middleware layer constant. Fits MIAA "Isolation" by abstracting the model choice into the runtime config.

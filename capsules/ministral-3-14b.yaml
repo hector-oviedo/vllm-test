@@ -2,11 +2,11 @@ api_version: v1
 kind: Capsule
 metadata:
   name: "ministral-3-14b-instruct"
-  description: "Ministral 3 14B (Dec 2025 Release) - High performance edge model (AWQ Quantized)"
-  author: "Mistral AI / MaziyarPanahi"
+  description: "Ministral 3 14B (Dec 2025 Release) - High performance edge model (AWQ 4-bit)"
+  author: "Mistral AI / cyankiwi"
 
 spec:
-  # FIX: Use AWQ version as bitsandbytes is not supported for Pixtral architecture yet
-  base_model: "MaziyarPanahi/Ministral-3-14B-Instruct-2512-AWQ"
+  # FIX: Use verified AWQ repo
+  base_model: "cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit"
   context_window: 32768
   adapters: []

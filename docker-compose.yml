@@ -35,7 +35,7 @@ services:
     ports:
       - "8000:8000"
     # Base Model: Ministral 3 14B (Verified ID)
-    command: --model MaziyarPanahi/Ministral-3-14B-Instruct-2512-AWQ --port 8000 --dtype auto --gpu-memory-utilization 0.9 --quantization awq
+    command: --model cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit --port 8000 --dtype auto --gpu-memory-utilization 0.9 --quantization awq
     networks:
       default:
         aliases:

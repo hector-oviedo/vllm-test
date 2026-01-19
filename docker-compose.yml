@@ -29,9 +29,14 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
     volumes:
       - ~/.cache/huggingface:/root/.cache/huggingface
+      - ./capsules:/app/capsules
     ports:
       - "8000:8000"
-    command: --model facebook/opt-125m --port 8000 # Default placeholder model
+    command: --model mistralai/Ministral-3-14B-Instruct-v0.1 --port 8000 --dtype auto --gpu-memory-utilization 0.9
+    networks:
+      default:
+        aliases:
+          - inference
     networks:
       default:
         aliases:
@@ -51,9 +56,14 @@ services:
       - /dev/dri
     volumes:
       - ~/.cache/huggingface:/root/.cache/huggingface
+      - ./capsules:/app/capsules
     ports:
       - "8000:8000"
-    command: --model facebook/opt-125m --port 8000 # Default placeholder model
+    command: --model mistralai/Ministral-3-14B-Instruct-v0.1 --port 8000 --dtype auto --gpu-memory-utilization 0.9
+    networks:
+      default:
+        aliases:
+          - inference
     group_add:
       - video
     ipc: host

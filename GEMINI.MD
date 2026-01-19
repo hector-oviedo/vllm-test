@@ -1,9 +1,9 @@
 # 🧠 GEMINI MEMORY & ORCHESTRATION LOG
 
 ## 📊 Project Status
-**Phase:** Phase 4: The Intelligence (Modularity Layer)
-**Current Task:** Verifying Secondary Models (Fixing GPT-OSS Quantization).
-**Health:** Yellow - Tuning GPT-OSS Config
+**Phase:** Phase 5: The Interface (Agnostic Layer)
+**Current Task:** Implementing MCP Host for Tooling.
+**Health:** Green - All Models Verified
 
 ## 🗺️ Master Plan
 - [x] **Phase 1: Architecture & Knowledge Integration**
@@ -19,7 +19,7 @@
     - [x] **Step 2:** Implement Auth Middleware (Bearer/API Key).
     - [x] **Step 3:** Build FastAPI Gateway logic (Routing & Normalization).
     - [x] **Step 4:** Containerize Middleware & Fix Compose Dependencies.
-- [ ] **Phase 4: The Intelligence (Modularity Layer)**
+- [x] **Phase 4: The Intelligence (Modularity Layer)**
     - [x] **Step 1:** Implement Capsule Manifest Schema (`capsule.py`).
     - [x] **Step 2:** Define Base Capsules (`ministral`, `gpt-oss`, `deepseek`).
     - [x] **Step 3:** Update Docker Compose with Profiles for each model.
@@ -28,10 +28,12 @@
     - [x] **Step 6:** **Refinement:** Switch Ministral to AWQ (`cyankiwi/...`) to resolve architecture and availability issues.
     - [x] **Step 7:** **Fix:** Set `--quantization compressed-tensors` to match AWQ model config.
     - [x] **Step 8:** **Fix:** Remove explicit quantization for `gpt-oss-20b` (Native `mxfp4` detected).
-    - [ ] **Step 9:** **Testing:** Verify `deepseek-cuda` (Distill) profile.
+    - [x] **Step 9:** **Testing:** Verified `ministral-cuda`, `gpt-cuda`, `deepseek-cuda` profiles.
 - [ ] **Phase 5: The Interface (Agnostic Layer)**
-    - [ ] Implement MCP Host for Tooling.
-    - [ ] Add OpenLLMetry Observability.
+    - [ ] **Step 1:** Install `mcp` SDK in Middleware.
+    - [ ] **Step 2:** Implement MCP Client/Host logic in FastAPI.
+    - [ ] **Step 3:** Configure a sample MCP Server (e.g., Filesystem or Web Search) for testing.
+    - [ ] **Step 4:** Add OpenLLMetry Observability.
 - [ ] **Phase 6: Documentation & Finalization**
     - [ ] Generate `openapi.json`.
     - [ ] Generate `llm.txt` (Standardized Agent Discovery file).
@@ -58,6 +60,7 @@
 | 2026-01-19 | Fix 404 | Updated AWQ ID to `cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit` (Verified Repo) |
 | 2026-01-19 | Fix Config | Updated quantization flag to `compressed-tensors` to match model metadata |
 | 2026-01-19 | Fix GPT-OSS | Removed manual quantization flags to allow native `mxfp4` loading |
+| 2026-01-19 | Verified | Confirmed all 3 model profiles are operational |
 
 ## 💡 Architectural Decision Records (ADR)
 - **Decision:** Docker Profiles for Models -> **Reason:** Enables "Cold Swapping" of distinct base models (different encoders) while keeping the Middleware layer constant. Fits MIAA "Isolation" by abstracting the model choice into the runtime config.
@@ -66,3 +69,4 @@
 - **Decision:** On-the-fly Quantization -> **Reason:** 14B+ models in BF16 exceed 24GB VRAM. Using `bitsandbytes` (4-bit) allows them to run locally without downloading separate quantized weights, maintaining "Base Model" purity in definitions.
 - **Decision:** Pre-Quantized AWQ for Pixtral -> **Reason:** `bitsandbytes` dynamic quantization is not yet supported for Pixtral (Ministral 3) architecture in vLLM. Switching to verified AWQ weights ensures stability.
 - **Decision:** Compressed-Tensors Flag -> **Reason:** The specific AWQ model uses `compressed-tensors` format metadata, requiring explicit flag matching in vLLM.
+- **Decision:** Native MXFP4 for GPT-OSS -> **Reason:** The model is already quantized in a specific format (`mxfp4`), so generic flags like `bitsandbytes` cause conflicts.

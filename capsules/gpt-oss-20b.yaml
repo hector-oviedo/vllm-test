@@ -1,0 +1,13 @@
+api_version: v1
+kind: Capsule
+metadata:
+  name: "gpt-oss-20b"
+  description: "GPT-OSS 20B - Advanced Reasoning Model (CoT Enabled)"
+  tags: ["thinking", "cot", "reasoning"]
+
+spec:
+  # Using the specific ID from your reference project
+  base_model: "openai/gpt-oss-20b" 
+  context_window: 16384 # Verifying typical 20B context
+  chat_template: "chatml" # Standard for many OSS models
+  adapters: []

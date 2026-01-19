@@ -37,12 +37,17 @@ This system provides a "Universal Interface" compatible with modern reasoning wo
 # Clone the repository
 git clone <repo_url>
 
-# Start MIAA on NVIDIA GPU (CUDA)
-docker-compose --profile cuda up -d
+# Option A: Start Ministral 3 14B (Default Edge Model)
+docker-compose --profile ministral up -d
 
-# OR Start MIAA on AMD GPU (ROCm)
-# Note: Requires AMD ROCm 7+ compatible hardware
-docker-compose --profile rocm up -d
+# Option B: Start GPT-OSS 20B (Reasoning/CoT Model)
+docker-compose --profile gpt up -d
+
+# Option C: Start DeepSeek Distill 8B (Fast Reasoning)
+docker-compose --profile deepseek up -d
+
+# Note: All profiles automatically start the Middleware on port 8080.
+# Only one inference profile can run at a time on the same GPU port (8000).
 ```
 
 ### Accessing the API

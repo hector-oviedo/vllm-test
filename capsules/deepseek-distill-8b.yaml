@@ -1,0 +1,12 @@
+api_version: v1
+kind: Capsule
+metadata:
+  name: "deepseek-distill-8b"
+  description: "DeepSeek v3.2 Speciale Distill (Qwen3-8B Base)"
+  tags: ["distill", "fast", "reasoning"]
+
+spec:
+  base_model: "TeichAI/Qwen3-8B-DeepSeek-v3.2-Speciale-Distill"
+  context_window: 32768
+  chat_template: "chatml"
+  adapters: []

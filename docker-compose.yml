@@ -14,16 +14,17 @@ services:
       - "8080:8080"
     environment:
       - INFERENCE_URL=http://inference:8000/v1
+    # No depends_on, as inference is an alias
 
   # ---------------------------------------------------------------------------
-  # ISOLATION LAYER (Execution) - NVIDIA CUDA
+  # MODEL 1: Ministral 3 14B (CUDA)
   # ---------------------------------------------------------------------------
-  inference-cuda:
-    profiles: ["cuda"]
+  ministral-cuda:
+    profiles: ["ministral", "default"]
     build:
       context: ./isolation
       dockerfile: Dockerfile.cuda
-    container_name: miaa-inference-cuda
+    container_name: miaa-ministral
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -32,41 +33,56 @@ services:
       - ./capsules:/app/capsules
     ports:
       - "8000:8000"
+    # Base Model: Ministral 3 14B
     command: --model mistralai/Ministral-3-14B-Instruct-v0.1 --port 8000 --dtype auto --gpu-memory-utilization 0.9
-    networks:
-      default:
-        aliases:
-          - inference
     networks:
       default:
         aliases:
           - inference
 
   # ---------------------------------------------------------------------------
-  # ISOLATION LAYER (Execution) - AMD ROCm
+  # MODEL 2: GPT-OSS 20B (CUDA) - Thinking/CoT
   # ---------------------------------------------------------------------------
-  inference-rocm:
-    profiles: ["rocm"]
+  gpt-cuda:
+    profiles: ["gpt"]
     build:
       context: ./isolation
-      dockerfile: Dockerfile.rocm
-    container_name: miaa-inference-rocm
-    devices:
-      - /dev/kfd
-      - /dev/dri
+      dockerfile: Dockerfile.cuda
+    container_name: miaa-gpt
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
     volumes:
       - ~/.cache/huggingface:/root/.cache/huggingface
       - ./capsules:/app/capsules
     ports:
       - "8000:8000"
-    command: --model mistralai/Ministral-3-14B-Instruct-v0.1 --port 8000 --dtype auto --gpu-memory-utilization 0.9
+    # Base Model: GPT-OSS 20B
+    command: --model openai/gpt-oss-20b --port 8000 --dtype auto --gpu-memory-utilization 0.9 --trust-remote-code
     networks:
       default:
         aliases:
           - inference
-    group_add:
-      - video
-    ipc: host
+
+  # ---------------------------------------------------------------------------
+  # MODEL 3: DeepSeek Distill 8B (CUDA)
+  # ---------------------------------------------------------------------------
+  deepseek-cuda:
+    profiles: ["deepseek"]
+    build:
+      context: ./isolation
+      dockerfile: Dockerfile.cuda
+    container_name: miaa-deepseek
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+      - ./capsules:/app/capsules
+    ports:
+      - "8000:8000"
+    # Base Model: DeepSeek Distill (Qwen3-8B)
+    command: --model TeichAI/Qwen3-8B-DeepSeek-v3.2-Speciale-Distill --port 8000 --dtype auto --gpu-memory-utilization 0.9 --trust-remote-code
     networks:
       default:
         aliases:

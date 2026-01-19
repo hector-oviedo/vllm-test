@@ -2,8 +2,8 @@
 
 ## 📊 Project Status
 **Phase:** Phase 4: The Intelligence (Modularity Layer)
-**Current Task:** Configuring Inference Engine with Base Capsule.
-**Health:** Green - Base Model Configured (Ministral 3 14B)
+**Current Task:** Configuring Multiple Model Capsules (Ministral, GPT-OSS, DeepSeek).
+**Health:** Green - Multi-Model Config Ready
 
 ## 🗺️ Master Plan
 - [x] **Phase 1: Architecture & Knowledge Integration**
@@ -21,9 +21,9 @@
     - [x] **Step 4:** Containerize Middleware & Fix Compose Dependencies.
 - [ ] **Phase 4: The Intelligence (Modularity Layer)**
     - [x] **Step 1:** Implement Capsule Manifest Schema (`capsule.py`).
-    - [x] **Step 2:** Define Base Capsule (`ministral-3-14b.yaml`).
-    - [x] **Step 3:** Update Docker Compose to load Base Model.
-    - [ ] **Step 4:** Implement Dynamic LoRA Loading Logic (Middleware).
+    - [x] **Step 2:** Define Base Capsules (`ministral`, `gpt-oss`, `deepseek`).
+    - [x] **Step 3:** Update Docker Compose with Profiles for each model.
+    - [ ] **Step 4:** **Testing:** Verify model switching and "Thinking" capabilities.
 - [ ] **Phase 5: The Interface (Agnostic Layer)**
     - [ ] Implement MCP Host for Tooling.
     - [ ] Add OpenLLMetry Observability.
@@ -45,12 +45,9 @@
 | 2026-01-19 | Middleware Code | Implemented schemas.py, auth.py, main.py (FastAPI), and requirements.txt |
 | 2026-01-19 | Compose Fix | Removed invalid `depends_on` from docker-compose.yml |
 | 2026-01-19 | Docs Update | Updated README with Middleware Access info |
-| 2026-01-19 | Modularity | Implemented `capsule.py` schema and configured `ministral-3-14b.yaml` |
+| 2026-01-19 | Modularity | Configured 3 Capsules: Ministral 3 14B, GPT-OSS 20B, DeepSeek Distill 8B |
+| 2026-01-19 | Compose Update | Created `ministral`, `gpt`, `deepseek` docker profiles for isolated testing |
 
 ## 💡 Architectural Decision Records (ADR)
-- **Decision:** Use MIAA Paradigm Folder Structure -> **Reason:** Enforces strict separation of concerns per project mandate.
-- **Decision:** Production-Ready Documentation -> **Reason:** All docs will be professional, self-authored, and generated as static HTML with Bootstrap.
-- **Decision:** Docker Profiles for Hardware -> **Reason:** Allows single `docker-compose.yml` to serve both NVIDIA and AMD users without code changes, fulfilling 'Isolation'.
-- **Decision:** Bypass OpenAI API Key -> **Reason:** Set `VLLM_API_KEY="EMPTY"` in Dockerfiles to ensure the system is fully local and vendor-agnostic.
-- **Decision:** Pydantic for Unified Schema -> **Reason:** Ensures strict validation of the "Unified Interface Protocol" (roles, thinking, tools) before requests hit the model.
-- **Decision:** Ministral 3 14B Base -> **Reason:** Selected as the default high-performance edge model per user request.
+- **Decision:** Docker Profiles for Models -> **Reason:** Enables "Cold Swapping" of distinct base models (different encoders) while keeping the Middleware layer constant. Fits MIAA "Isolation" by abstracting the model choice into the runtime config.
+- **Decision:** GPT-OSS 20B as CoT -> **Reason:** Designated as the primary "Thinking" model for testing reasoning capabilities.

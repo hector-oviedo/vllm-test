@@ -32,6 +32,17 @@ This system provides a "Universal Interface" compatible with modern reasoning wo
 *   Docker & Docker Compose
 *   NVIDIA GPU (CUDA 12+) OR AMD GPU (ROCm 7+)
 
+### Configuration
+Some models (like Ministral 3) are gated and require a Hugging Face token.
+1.  Create a `.env` file in the root directory:
+    ```bash
+    cp .env.example .env
+    ```
+2.  Edit `.env` and add your token:
+    ```
+    HF_TOKEN=hf_your_token_here
+    ```
+
 ### Quick Start
 ```bash
 # Clone the repository

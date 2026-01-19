@@ -28,13 +28,14 @@ services:
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
+      - HF_TOKEN=${HF_TOKEN}
     volumes:
       - ~/.cache/huggingface:/root/.cache/huggingface
       - ./capsules:/app/capsules
     ports:
       - "8000:8000"
-    # Base Model: Ministral 3 14B
-    command: --model mistralai/Ministral-3-14B-Instruct-v0.1 --port 8000 --dtype auto --gpu-memory-utilization 0.9
+    # Base Model: Ministral 3 14B (Verified ID)
+    command: --model MaziyarPanahi/Ministral-3-14B-Instruct-2512-AWQ --port 8000 --dtype auto --gpu-memory-utilization 0.9 --quantization awq
     networks:
       default:
         aliases:
@@ -52,13 +53,14 @@ services:
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
+      - HF_TOKEN=${HF_TOKEN}
     volumes:
       - ~/.cache/huggingface:/root/.cache/huggingface
       - ./capsules:/app/capsules
     ports:
       - "8000:8000"
     # Base Model: GPT-OSS 20B
-    command: --model openai/gpt-oss-20b --port 8000 --dtype auto --gpu-memory-utilization 0.9 --trust-remote-code
+    command: --model openai/gpt-oss-20b --port 8000 --dtype auto --gpu-memory-utilization 0.9 --trust-remote-code --quantization bitsandbytes --load-format bitsandbytes
     networks:
       default:
         aliases:
@@ -76,6 +78,7 @@ services:
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
+      - HF_TOKEN=${HF_TOKEN}
     volumes:
       - ~/.cache/huggingface:/root/.cache/huggingface
       - ./capsules:/app/capsules

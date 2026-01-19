@@ -2,8 +2,8 @@
 
 ## 📊 Project Status
 **Phase:** Phase 4: The Intelligence (Modularity Layer)
-**Current Task:** Configuring Multiple Model Capsules (Ministral, GPT-OSS, DeepSeek).
-**Health:** Green - Multi-Model Config Ready
+**Current Task:** Verifying Inference Config (Fixing Architecture Incompatibility).
+**Health:** Yellow - Fixing Ministral Config
 
 ## 🗺️ Master Plan
 - [x] **Phase 1: Architecture & Knowledge Integration**
@@ -23,7 +23,10 @@
     - [x] **Step 1:** Implement Capsule Manifest Schema (`capsule.py`).
     - [x] **Step 2:** Define Base Capsules (`ministral`, `gpt-oss`, `deepseek`).
     - [x] **Step 3:** Update Docker Compose with Profiles for each model.
-    - [ ] **Step 4:** **Testing:** Verify model switching and "Thinking" capabilities.
+    - [x] **Step 4:** **Fix:** Correct Ministral ID and add HF_TOKEN support.
+    - [x] **Step 5:** **Fix:** Enable `bitsandbytes` quantization for 14B/20B models to fit in 24GB VRAM.
+    - [x] **Step 6:** **Refinement:** Switch Ministral to AWQ (Pixtral arch doesn't support bnb yet).
+    - [ ] **Step 7:** **Testing:** Verify model switching and "Thinking" capabilities.
 - [ ] **Phase 5: The Interface (Agnostic Layer)**
     - [ ] Implement MCP Host for Tooling.
     - [ ] Add OpenLLMetry Observability.
@@ -47,7 +50,13 @@
 | 2026-01-19 | Docs Update | Updated README with Middleware Access info |
 | 2026-01-19 | Modularity | Configured 3 Capsules: Ministral 3 14B, GPT-OSS 20B, DeepSeek Distill 8B |
 | 2026-01-19 | Compose Update | Created `ministral`, `gpt`, `deepseek` docker profiles for isolated testing |
+| 2026-01-19 | Fix Auth/ID | Updated Ministral ID to `...2512-BF16` and added `HF_TOKEN` to compose |
+| 2026-01-19 | Fix OOM | Added `--quantization bitsandbytes` to Ministral and GPT-OSS profiles |
+| 2026-01-19 | Fix Arch | Switched Ministral to AWQ (`MaziyarPanahi/...`) as vLLM bitsandbytes fails on Pixtral |
 
 ## 💡 Architectural Decision Records (ADR)
 - **Decision:** Docker Profiles for Models -> **Reason:** Enables "Cold Swapping" of distinct base models (different encoders) while keeping the Middleware layer constant. Fits MIAA "Isolation" by abstracting the model choice into the runtime config.
 - **Decision:** GPT-OSS 20B as CoT -> **Reason:** Designated as the primary "Thinking" model for testing reasoning capabilities.
+- **Decision:** Pass HF_TOKEN -> **Reason:** Required for gated models (Ministral 3). Token is passed via env var to maintain security and allow CI/CD integration.
+- **Decision:** On-the-fly Quantization -> **Reason:** 14B+ models in BF16 exceed 24GB VRAM. Using `bitsandbytes` (4-bit) allows them to run locally without downloading separate quantized weights, maintaining "Base Model" purity in definitions.
+- **Decision:** Pre-Quantized AWQ for Pixtral -> **Reason:** `bitsandbytes` dynamic quantization is not yet supported for Pixtral (Ministral 3) architecture in vLLM. Switching to verified AWQ weights ensures stability.

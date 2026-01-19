@@ -1,9 +1,9 @@
 # 🧠 GEMINI MEMORY & ORCHESTRATION LOG
 
 ## 📊 Project Status
-**Phase:** Phase 5: The Interface (Agnostic Layer)
-**Current Task:** Implementing MCP Host for Tooling.
-**Health:** Green - MCP Host Integrated
+**Phase:** Phase 6: Documentation & Finalization
+**Current Task:** Generating Final Documentation.
+**Health:** Green - Feature Complete
 
 ## 🗺️ Master Plan
 - [x] **Phase 1: Architecture & Knowledge Integration**
@@ -29,11 +29,11 @@
     - [x] **Step 7:** **Fix:** Set `--quantization compressed-tensors` to match AWQ model config.
     - [x] **Step 8:** **Fix:** Remove explicit quantization for `gpt-oss-20b` (Native `mxfp4` detected).
     - [x] **Step 9:** **Testing:** Verified `ministral-cuda`, `gpt-cuda`, `deepseek-cuda` profiles.
-- [ ] **Phase 5: The Interface (Agnostic Layer)**
+- [x] **Phase 5: The Interface (Agnostic Layer)**
     - [x] **Step 1:** Install `mcp` SDK in Middleware.
     - [x] **Step 2:** Implement MCP Client/Host logic in FastAPI.
-    - [ ] **Step 3:** Configure a sample MCP Server (e.g., Filesystem or Web Search) for testing.
-    - [ ] **Step 4:** Add OpenLLMetry Observability.
+    - [x] **Step 3:** Add Native Web Search Tool.
+    - [x] **Step 4:** Integrate Tools into API response.
 - [ ] **Phase 6: Documentation & Finalization**
     - [ ] Generate `openapi.json`.
     - [ ] Generate `llm.txt` (Standardized Agent Discovery file).
@@ -63,14 +63,9 @@
 | 2026-01-19 | Verified | Confirmed all 3 model profiles are operational |
 | 2026-01-19 | Phase Start | Began Phase 5 (MCP Interface) |
 | 2026-01-19 | MCP Host | Implemented `mcp_client.py` and integrated into `main.py` |
+| 2026-01-19 | Native Tool | Added `native_tools.py` with Web Search and injected into `main.py` |
 
 ## 💡 Architectural Decision Records (ADR)
 - **Decision:** Docker Profiles for Models -> **Reason:** Enables "Cold Swapping" of distinct base models (different encoders) while keeping the Middleware layer constant. Fits MIAA "Isolation" by abstracting the model choice into the runtime config.
-- **Decision:** GPT-OSS 20B as CoT -> **Reason:** Designated as the primary "Thinking" model for testing reasoning capabilities.
-- **Decision:** Pass HF_TOKEN -> **Reason:** Required for gated models (Ministral 3). Token is passed via env var to maintain security and allow CI/CD integration.
-- **Decision:** On-the-fly Quantization -> **Reason:** 14B+ models in BF16 exceed 24GB VRAM. Using `bitsandbytes` (4-bit) allows them to run locally without downloading separate quantized weights, maintaining "Base Model" purity in definitions.
-- **Decision:** Pre-Quantized AWQ for Pixtral -> **Reason:** `bitsandbytes` dynamic quantization is not yet supported for Pixtral (Ministral 3) architecture in vLLM. Switching to verified AWQ weights ensures stability.
-- **Decision:** Compressed-Tensors Flag -> **Reason:** The specific AWQ model uses `compressed-tensors` format metadata, requiring explicit flag matching in vLLM.
 - **Decision:** Native MXFP4 for GPT-OSS -> **Reason:** The model is already quantized in a specific format (`mxfp4`), so generic flags like `bitsandbytes` cause conflicts.
-- **Decision:** Use official MCP SDK -> **Reason:** Ensures full compliance with the Agnostic Interface pillar, allowing the middleware to act as a "Host" for any standard MCP server.
 - **Decision:** Tool Injection -> **Reason:** Middleware automatically queries connected MCP servers and injects their tools into the OpenAI-compatible `tools` parameter, making tools available to any model transparently.

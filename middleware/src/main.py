@@ -6,6 +6,7 @@ from fastapi.responses import StreamingResponse, JSONResponse
 from .schemas import ChatCompletionRequest
 from .auth import get_api_key
 from .mcp_client import McpHost
+from .native_tools import WEB_SEARCH_TOOL
 
 app = FastAPI(title="MIAA Unified Inference API", version="1.0.0")
 
@@ -67,16 +68,23 @@ async def chat_completions(
         # Remove top-level system from payload sent to OpenAI-compatible upstream
         payload.pop("system", None)
 
-    # 1.5 MCP Tool Injection (Agnostic Layer)
+    # 1.5 Tool Injection (Native + MCP)
+    current_tools = payload.get("tools", [])
+    
+    # Add Native Web Search
+    current_tools.append(WEB_SEARCH_TOOL)
+    
+    # Add MCP Tools if available
     if mcp_host:
         mcp_tools = await mcp_host.list_tools()
         if mcp_tools:
-            # Merge with existing tools or create new list
-            current_tools = payload.get("tools", [])
-            payload["tools"] = current_tools + mcp_tools
-            # Ensure tool_choice is set if tools are present (optional, usually 'auto')
-            if "tool_choice" not in payload:
-                payload["tool_choice"] = "auto"
+            current_tools.extend(mcp_tools)
+    
+    if current_tools:
+        payload["tools"] = current_tools
+        # Ensure tool_choice is set if tools are present (optional, usually 'auto')
+        if "tool_choice" not in payload:
+            payload["tool_choice"] = "auto"
 
     # 2. Engine Dispatch
     upstream_url = f"{INFERENCE_URL}/chat/completions"

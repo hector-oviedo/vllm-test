@@ -1,7 +1,7 @@
 # 🧠 GEMINI MEMORY & ORCHESTRATION LOG
 
 ## 📊 Project Status
-**Phase:** Completed
+**Phase:** Phase 6: Documentation & Finalization
 **Current Task:** Final Delivery.
 **Health:** Green - Ready for Production
 
@@ -35,7 +35,7 @@
     - [x] **Step 3:** Add Native Web Search Tool.
     - [x] **Step 4:** Integrate Tools into API response.
 - [x] **Phase 6: Documentation & Finalization**
-    - [x] Generate `openapi.json` (Manually created).
+    - [x] Generate `openapi.json` (Automated via Docker).
     - [x] Generate `llm.txt`.
     - [x] Generate Static HTML Docs (Bootstrap).
 
@@ -47,10 +47,11 @@
 | 2026-01-19 | Phase 2-4 | Completed Isolation, Middleware, Modularity layers |
 | 2026-01-19 | Verified | Confirmed all 3 model profiles (Ministral, GPT-OSS, DeepSeek) work |
 | 2026-01-19 | Phase 5 | Implemented MCP Host and Native Tools |
-| 2026-01-19 | Documentation | Generated OpenAPI, LLM.txt, and HTML Docs |
+| 2026-01-19 | Documentation | Created HTML Docs and Automated OpenAPI Generator |
 
 ## 💡 Architectural Decision Records (ADR)
 - **Decision:** Docker Profiles for Models -> **Reason:** Enables "Cold Swapping" of distinct base models (different encoders) while keeping the Middleware layer constant. Fits MIAA "Isolation" by abstracting the model choice into the runtime config.
 - **Decision:** Native MXFP4 for GPT-OSS -> **Reason:** The model is already quantized in a specific format (`mxfp4`), so generic flags like `bitsandbytes` cause conflicts.
 - **Decision:** Tool Injection -> **Reason:** Middleware automatically queries connected MCP servers and injects their tools into the OpenAI-compatible `tools` parameter, making tools available to any model transparently.
 - **Decision:** Tool Control -> **Reason:** Respects standard `tool_choice` parameter. If `tool_choice="none"`, tools are stripped to save tokens. Default is "auto".
+- **Decision:** Docs Automation -> **Reason:** Created a `docs` profile in docker-compose to run a script that generates `openapi.json` from the living code, ensuring docs never drift from implementation.

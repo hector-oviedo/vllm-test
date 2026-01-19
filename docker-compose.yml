@@ -14,7 +14,23 @@ services:
       - "8080:8080"
     environment:
       - INFERENCE_URL=http://inference:8000/v1
+      # Pass through env vars for MCP and Tools
+      - MCP_SERVER_COMMAND=${MCP_SERVER_COMMAND}
+      - MCP_SERVER_ARGS=${MCP_SERVER_ARGS}
     # No depends_on, as inference is an alias
+
+  # ---------------------------------------------------------------------------
+  # DOCS AUTOMATION (Automation)
+  # ---------------------------------------------------------------------------
+  docs-generator:
+    profiles: ["docs"]
+    build:
+      context: ./middleware
+      dockerfile: Dockerfile
+    container_name: miaa-docs-gen
+    volumes:
+      - ./docs:/app/docs  # Mount docs to write output back to host
+    command: python src/openapi_utils.py
 
   # ---------------------------------------------------------------------------
   # MODEL 1: Ministral 3 14B (CUDA)

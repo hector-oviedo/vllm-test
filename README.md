@@ -76,6 +76,16 @@ The Middleware Gateway ("The Universal Translator") listens on port **8080**.
     *   Header: `Authorization: Bearer my-secret-key`
     *   Header: `x-api-key: my-secret-key`
 
+## Development & Automation
+The project includes automated tooling for documentation generation.
+
+### Auto-Generate OpenAPI Schema
+To update `docs/openapi.json` automatically based on the current code:
+```bash
+docker-compose --profile docs up
+```
+This spins up a container, generates the schema from the FastAPI application, saves it to the `docs/` folder, and exits.
+
 ## Documentation
 Full technical documentation is available in the `docs/` directory.
 - [API Reference](docs/api_reference.html)

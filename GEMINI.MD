@@ -2,8 +2,8 @@
 
 ## 📊 Project Status
 **Phase:** Phase 4: The Intelligence (Modularity Layer)
-**Current Task:** Verifying Inference Config (Fixing Model Availability).
-**Health:** Yellow - Fixing Ministral ID
+**Current Task:** Verifying Inference Config (Fixing Quantization Mismatch).
+**Health:** Yellow - Tuning Quantization Flags
 
 ## 🗺️ Master Plan
 - [x] **Phase 1: Architecture & Knowledge Integration**
@@ -26,7 +26,8 @@
     - [x] **Step 4:** **Fix:** Correct Ministral ID and add HF_TOKEN support.
     - [x] **Step 5:** **Fix:** Enable `bitsandbytes` quantization for 14B/20B models to fit in 24GB VRAM.
     - [x] **Step 6:** **Refinement:** Switch Ministral to AWQ (`cyankiwi/...`) to resolve architecture and availability issues.
-    - [ ] **Step 7:** **Testing:** Verify model switching and "Thinking" capabilities.
+    - [x] **Step 7:** **Fix:** Set `--quantization compressed-tensors` to match AWQ model config.
+    - [ ] **Step 8:** **Testing:** Verify model switching and "Thinking" capabilities.
 - [ ] **Phase 5: The Interface (Agnostic Layer)**
     - [ ] Implement MCP Host for Tooling.
     - [ ] Add OpenLLMetry Observability.
@@ -54,6 +55,7 @@
 | 2026-01-19 | Fix OOM | Added `--quantization bitsandbytes` to Ministral and GPT-OSS profiles |
 | 2026-01-19 | Fix Arch | Switched Ministral to AWQ (`MaziyarPanahi/...`) as vLLM bitsandbytes fails on Pixtral |
 | 2026-01-19 | Fix 404 | Updated AWQ ID to `cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit` (Verified Repo) |
+| 2026-01-19 | Fix Config | Updated quantization flag to `compressed-tensors` to match model metadata |
 
 ## 💡 Architectural Decision Records (ADR)
 - **Decision:** Docker Profiles for Models -> **Reason:** Enables "Cold Swapping" of distinct base models (different encoders) while keeping the Middleware layer constant. Fits MIAA "Isolation" by abstracting the model choice into the runtime config.
@@ -61,3 +63,4 @@
 - **Decision:** Pass HF_TOKEN -> **Reason:** Required for gated models (Ministral 3). Token is passed via env var to maintain security and allow CI/CD integration.
 - **Decision:** On-the-fly Quantization -> **Reason:** 14B+ models in BF16 exceed 24GB VRAM. Using `bitsandbytes` (4-bit) allows them to run locally without downloading separate quantized weights, maintaining "Base Model" purity in definitions.
 - **Decision:** Pre-Quantized AWQ for Pixtral -> **Reason:** `bitsandbytes` dynamic quantization is not yet supported for Pixtral (Ministral 3) architecture in vLLM. Switching to verified AWQ weights ensures stability.
+- **Decision:** Compressed-Tensors Flag -> **Reason:** The specific AWQ model uses `compressed-tensors` format metadata, requiring explicit flag matching in vLLM.

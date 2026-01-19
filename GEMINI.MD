@@ -2,8 +2,8 @@
 
 ## 📊 Project Status
 **Phase:** Phase 4: The Intelligence (Modularity Layer)
-**Current Task:** Verifying Inference Config (Fixing Quantization Mismatch).
-**Health:** Yellow - Tuning Quantization Flags
+**Current Task:** Verifying Secondary Models (GPT-OSS, DeepSeek).
+**Health:** Green - Ministral Verified
 
 ## 🗺️ Master Plan
 - [x] **Phase 1: Architecture & Knowledge Integration**
@@ -27,7 +27,7 @@
     - [x] **Step 5:** **Fix:** Enable `bitsandbytes` quantization for 14B/20B models to fit in 24GB VRAM.
     - [x] **Step 6:** **Refinement:** Switch Ministral to AWQ (`cyankiwi/...`) to resolve architecture and availability issues.
     - [x] **Step 7:** **Fix:** Set `--quantization compressed-tensors` to match AWQ model config.
-    - [ ] **Step 8:** **Testing:** Verify model switching and "Thinking" capabilities.
+    - [ ] **Step 8:** **Testing:** Verify `gpt-cuda` (Thinking) and `deepseek-cuda` (Distill) profiles.
 - [ ] **Phase 5: The Interface (Agnostic Layer)**
     - [ ] Implement MCP Host for Tooling.
     - [ ] Add OpenLLMetry Observability.
@@ -56,6 +56,7 @@
 | 2026-01-19 | Fix Arch | Switched Ministral to AWQ (`MaziyarPanahi/...`) as vLLM bitsandbytes fails on Pixtral |
 | 2026-01-19 | Fix 404 | Updated AWQ ID to `cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit` (Verified Repo) |
 | 2026-01-19 | Fix Config | Updated quantization flag to `compressed-tensors` to match model metadata |
+| 2026-01-19 | Docs Update | Clarified Model Profiles and Quantization in README |
 
 ## 💡 Architectural Decision Records (ADR)
 - **Decision:** Docker Profiles for Models -> **Reason:** Enables "Cold Swapping" of distinct base models (different encoders) while keeping the Middleware layer constant. Fits MIAA "Isolation" by abstracting the model choice into the runtime config.

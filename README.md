@@ -49,12 +49,18 @@ Some models (like Ministral 3) are gated and require a Hugging Face token.
 git clone <repo_url>
 
 # Option A: Start Ministral 3 14B (Default Edge Model)
+# Uses 4-bit AWQ Quantization to fit in 24GB VRAM.
+# Model: cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit
 docker-compose --profile ministral up -d
 
 # Option B: Start GPT-OSS 20B (Reasoning/CoT Model)
+# Uses on-the-fly 4-bit BitsAndBytes Quantization.
+# Model: openai/gpt-oss-20b
 docker-compose --profile gpt up -d
 
 # Option C: Start DeepSeek Distill 8B (Fast Reasoning)
+# Runs in native BF16/FP16 (Fits in 24GB).
+# Model: TeichAI/Qwen3-8B-DeepSeek-v3.2-Speciale-Distill
 docker-compose --profile deepseek up -d
 
 # Note: All profiles automatically start the Middleware on port 8080.

@@ -5,22 +5,34 @@ from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse, JSONResponse
 from .schemas import ChatCompletionRequest
 from .auth import get_api_key
+from .mcp_client import McpHost
 
 app = FastAPI(title="MIAA Unified Inference API", version="1.0.0")
 
 # Configuration
 INFERENCE_URL = os.getenv("INFERENCE_URL", "http://inference:8000/v1")
 TIMEOUT = 600.0 # Extended timeout for reasoning models
+MCP_COMMAND = os.getenv("MCP_SERVER_COMMAND")
+MCP_ARGS = json.loads(os.getenv("MCP_SERVER_ARGS", "[]"))
 
 client = httpx.AsyncClient(timeout=TIMEOUT)
+mcp_host = None
 
 @app.on_event("startup")
 async def startup_event():
+    global mcp_host
     print(f"MIAA Middleware initialized. Upstream: {INFERENCE_URL}")
+    
+    if MCP_COMMAND:
+        print(f"🚀 Initializing MCP Host with: {MCP_COMMAND} {MCP_ARGS}")
+        mcp_host = McpHost(MCP_COMMAND, MCP_ARGS, os.environ.copy())
+        await mcp_host.connect()
 
 @app.on_event("shutdown")
 async def shutdown_event():
     await client.aclose()
+    if mcp_host:
+        await mcp_host.disconnect()
 
 async def stream_generator(response):
     """
@@ -38,6 +50,7 @@ async def chat_completions(
     """
     Unified Endpoint: POST /v1/chat/completions
     - Normalizes input (via Pydantic schema).
+    - Injects MCP Tools (Agnostic Layer).
     - Routes to isolated inference engine.
     - Handles Streaming.
     """
@@ -53,6 +66,17 @@ async def chat_completions(
         payload["messages"].insert(0, system_msg)
         # Remove top-level system from payload sent to OpenAI-compatible upstream
         payload.pop("system", None)
+
+    # 1.5 MCP Tool Injection (Agnostic Layer)
+    if mcp_host:
+        mcp_tools = await mcp_host.list_tools()
+        if mcp_tools:
+            # Merge with existing tools or create new list
+            current_tools = payload.get("tools", [])
+            payload["tools"] = current_tools + mcp_tools
+            # Ensure tool_choice is set if tools are present (optional, usually 'auto')
+            if "tool_choice" not in payload:
+                payload["tool_choice"] = "auto"
 
     # 2. Engine Dispatch
     upstream_url = f"{INFERENCE_URL}/chat/completions"
@@ -71,6 +95,12 @@ async def chat_completions(
 
     if r.status_code != 200:
         await r.aclose()
+        # Try to read error body
+        try:
+            error_detail = await r.read()
+            print(f"Upstream Error: {error_detail}")
+        except: 
+            pass
         raise HTTPException(status_code=r.status_code, detail="Upstream error")
 
     # 3. Response Protocol
@@ -87,4 +117,7 @@ async def chat_completions(
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "layer": "middleware"}
+    mcp_status = "disabled"
+    if mcp_host:
+        mcp_status = "connected" if mcp_host.session else "error"
+    return {"status": "healthy", "layer": "middleware", "mcp": mcp_status}

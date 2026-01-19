@@ -3,7 +3,7 @@
 ## 📊 Project Status
 **Phase:** Phase 5: The Interface (Agnostic Layer)
 **Current Task:** Implementing MCP Host for Tooling.
-**Health:** Green - All Models Verified
+**Health:** Green - MCP Host Integrated
 
 ## 🗺️ Master Plan
 - [x] **Phase 1: Architecture & Knowledge Integration**
@@ -30,8 +30,8 @@
     - [x] **Step 8:** **Fix:** Remove explicit quantization for `gpt-oss-20b` (Native `mxfp4` detected).
     - [x] **Step 9:** **Testing:** Verified `ministral-cuda`, `gpt-cuda`, `deepseek-cuda` profiles.
 - [ ] **Phase 5: The Interface (Agnostic Layer)**
-    - [ ] **Step 1:** Install `mcp` SDK in Middleware.
-    - [ ] **Step 2:** Implement MCP Client/Host logic in FastAPI.
+    - [x] **Step 1:** Install `mcp` SDK in Middleware.
+    - [x] **Step 2:** Implement MCP Client/Host logic in FastAPI.
     - [ ] **Step 3:** Configure a sample MCP Server (e.g., Filesystem or Web Search) for testing.
     - [ ] **Step 4:** Add OpenLLMetry Observability.
 - [ ] **Phase 6: Documentation & Finalization**
@@ -61,6 +61,8 @@
 | 2026-01-19 | Fix Config | Updated quantization flag to `compressed-tensors` to match model metadata |
 | 2026-01-19 | Fix GPT-OSS | Removed manual quantization flags to allow native `mxfp4` loading |
 | 2026-01-19 | Verified | Confirmed all 3 model profiles are operational |
+| 2026-01-19 | Phase Start | Began Phase 5 (MCP Interface) |
+| 2026-01-19 | MCP Host | Implemented `mcp_client.py` and integrated into `main.py` |
 
 ## 💡 Architectural Decision Records (ADR)
 - **Decision:** Docker Profiles for Models -> **Reason:** Enables "Cold Swapping" of distinct base models (different encoders) while keeping the Middleware layer constant. Fits MIAA "Isolation" by abstracting the model choice into the runtime config.
@@ -70,3 +72,5 @@
 - **Decision:** Pre-Quantized AWQ for Pixtral -> **Reason:** `bitsandbytes` dynamic quantization is not yet supported for Pixtral (Ministral 3) architecture in vLLM. Switching to verified AWQ weights ensures stability.
 - **Decision:** Compressed-Tensors Flag -> **Reason:** The specific AWQ model uses `compressed-tensors` format metadata, requiring explicit flag matching in vLLM.
 - **Decision:** Native MXFP4 for GPT-OSS -> **Reason:** The model is already quantized in a specific format (`mxfp4`), so generic flags like `bitsandbytes` cause conflicts.
+- **Decision:** Use official MCP SDK -> **Reason:** Ensures full compliance with the Agnostic Interface pillar, allowing the middleware to act as a "Host" for any standard MCP server.
+- **Decision:** Tool Injection -> **Reason:** Middleware automatically queries connected MCP servers and injects their tools into the OpenAI-compatible `tools` parameter, making tools available to any model transparently.
